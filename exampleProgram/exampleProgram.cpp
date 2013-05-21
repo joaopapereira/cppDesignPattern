@@ -13,7 +13,7 @@
  ============================================================================
  */
 #include "libJPLogger.hpp"
-#include "libJPReactor.hpp"
+#include "patterns/libJPReactor.hpp"
 #include <unistd.h>
 #include <iostream>
 #include <vector>
@@ -130,7 +130,10 @@ public:
 			ev == QueueEvents::FULL ){
 
 			char c = ((Queue*)this->handle)->get();
-			OneInstanceLogger::instance()->log("Eater",M_LOG_NRM,M_LOG_DBG,"Retrieved char %c , %s",c,name.c_str());
+			if( c == -1)
+				OneInstanceLogger::instance()->log("Eater",M_LOG_NRM,M_LOG_DBG,"Nothing to eat by %s",name.c_str());
+			else
+				OneInstanceLogger::instance()->log("Eater",M_LOG_NRM,M_LOG_DBG,"Retrieved char %c , %s",c,name.c_str());
 		}else if( ev == QueueEvents::EMPTY ){
 			sleep(1);
 			return 1;

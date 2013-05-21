@@ -16,7 +16,7 @@
        specific language governing permissions and limitations
        under the License.
  */
-#include "libJPReactor.hpp"
+#include "patterns/libJPReactor.hpp"
 
 
 #include <iostream>

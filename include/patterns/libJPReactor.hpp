@@ -18,6 +18,9 @@
  */
 #ifndef libJPReactor_H
 #define libJPReactor_H
+#include "patterns/reactor/EventHandler.hpp"
+#include "patterns/reactor/Event.hpp"
+#include "patterns/reactor/Handle.hpp"
 #include <map>
 #include <string>
 #include <vector>
@@ -25,68 +28,6 @@
 
 namespace jpCppLibs{
 
-
-
-	class Event{
-	public:
-		enum EventType{
-			NOTHING = 0,
-			END,
-			__LAST
-		};
-		bool operator==(Event ev){ return this->event == ev.event;}
-		void operator=(Event ev){ this->event = ev.event;}
-		operator Event::EventType() { return (EventType)event; }
-	private:
-		int event;
-	};
-
-	class Handle{
-	public:
-		Event::EventType virtual getEvent() = 0;
-	};
-	template<class T>
-	Event::EventType demuxEvents(T *v);
-
-	/**template<>
-	Event::EventType demuxEvents<Handle>(Handle * v){
-		throw std::string("This method need to be implemented for the handle");
-	}**/
-
-
-
-	/**
-	 * Class used to implement a unique counter
-	 * for the identifier of the semaphores
-	 */
-	class EventHandler{
-	public:
-		EventHandler(){handle = NULL;}
-		/**
-		 * Handle a specific event
-		 * @param ev Event that need to be handled
-		 */
-		int virtual eventHandler( Event::EventType ev ) = 0;
-
-		/**
-		 * Retrieve the handle this event has
-		 * @return HANDLE
-		 */
-		Handle * getHandle(){ return handle ;}
-
-		void setHandle( Handle * h){ handle = h ;}
-
-		int virtual close() = 0;
-
-		virtual ~EventHandler(){};
-
-	protected:
-		/**
-		 * Actual value of the identifier
-		 */
-		Handle * handle;
-	};
-	
 	class Dispatcher{
 	public:
 		Dispatcher();
