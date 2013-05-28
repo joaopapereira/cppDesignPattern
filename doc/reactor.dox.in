@@ -4,9 +4,9 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = "Semaphore Library"
+PROJECT_NAME           = "Reactor Library"
 PROJECT_NUMBER         = 1
-PROJECT_BRIEF          = Library that implements a semaphore class
+PROJECT_BRIEF          = Library that implements the Reactor design pattern
 PROJECT_LOGO           =
 OUTPUT_DIRECTORY       = @CMAKE_CURRENT_BINARY_DIR@/docs/docs/
 CREATE_SUBDIRS         = YES

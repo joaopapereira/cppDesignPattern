@@ -1,0 +1,32 @@
+import glob
+
+#get all the build variables we need
+Import('env', 'project', 'mymode', 'debugcflags', 'releasecflags','buildroot')
+localenv = env.Clone()
+
+builddir = '../' + buildroot + '/' + project   #holds the build directory for this project
+builddir = buildroot+'/'+project
+targetpath = builddir + '/' + project  #holds the path to the executable in the build directory
+
+#append the user's additional compile flags
+#assume debugcflags and releasecflags are defined
+if mymode == 'debug':
+   localenv.Append(CCFLAGS=debugcflags)
+else:
+   localenv.Append(CCFLAGS=releasecflags)
+
+#specify the build directory
+localenv.VariantDir(builddir, ".", duplicate=0)
+
+srclst = map(lambda x: builddir + '/' + x, glob.glob('*.cpp'))
+reactorSrc = map(lambda x: builddir + '/' + x, ['libJPReactor.cpp'])
+
+lib = localenv.SharedLibrary( target = "libJPReactor",source = reactorSrc )
+libStatic = localenv.Library( target = "libJPReactorStatic",source = reactorSrc )
+print lib
+print libStatic
+#localenv.Program(targetpath, source=srclst)
+#Command("lib"
+inst = env.Install(localenv['LIBDIR'],lib)
+inst = env.Install(localenv['LIBDIR'],libStatic)
+Default( inst )

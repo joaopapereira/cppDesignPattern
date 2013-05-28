@@ -1,0 +1,40 @@
+import glob
+
+#get all the build variables we need
+Import('env', 'project', 'mymode', 'debugcflags', 'releasecflags','buildroot','libpath')
+localenv = env.Clone()
+
+conf = Configure(localenv)
+needed_libs = ['JPLoggerStatic']
+
+
+for lib in needed_libs:
+  if not conf.CheckLib( lib ):
+    print 'Did not find library %s, exiting!!'%lib
+    Exit(1)
+localenv = conf.Finish()
+
+builddir = '../' + buildroot + '/' + project   #holds the build directory for this project
+builddir = buildroot+'/'+project+'_samples'
+targetpath = builddir + '/' + project  #holds the path to the executable in the build directory
+
+#append the user's additional compile flags
+#assume debugcflags and releasecflags are defined
+if mymode == 'debug':
+   localenv.Append(CCFLAGS=debugcflags)
+else:
+   localenv.Append(CCFLAGS=releasecflags)
+
+#specify the build directory
+localenv.VariantDir(builddir, ".", duplicate=0)
+
+srclst = map(lambda x: builddir + '/' + x, glob.glob('*.cpp'))
+sample = map(lambda x: builddir + '/' + x, ['exampleProgram.cpp'])
+sample1 = map(lambda x: builddir + '/' + x, ['exampleProgram1.cpp'])
+
+sample = localenv.Program( target = "exampleProgram",source = sample, LIBS=['libJPLoggerStatic','libJPReactorStatic'], LIBPATH=libpath)
+print sample
+#localenv.Program(targetpath, source=srclst)
+#Command("lib"
+inst = env.Install(localenv['BINDIR'],[sample])
+Default( inst )

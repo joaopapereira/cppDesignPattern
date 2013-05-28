@@ -1,0 +1,49 @@
+import os
+mymode = ARGUMENTS.get( "mode" , 'release' )
+
+if not( mymode in ['debug','release'] ):
+	print "Error: expected 'debug ' or 'release' as mode, found "+mymode
+	Exit(1)
+## End If
+
+buildTest = ARGUMENTS.get("test","nobuild")
+
+if not( buildTest in ['nobuild','build'] ):
+	print "Error: expected 'nobuild ' or 'build' as test, found "+buildTest
+	Exit(1)
+## End If
+samples = True if buildTest == "build" else False
+
+buildroot = '#build/'
+includeFolder = '#include'
+print "inc: "+includeFolder
+
+debugcflags = ['-W1']
+releasecflags = ['-O2']
+
+platform = ARGUMENTS.get('OS', Platform())
+
+lib = "#lib/$PLATFORM/"
+libpath = [lib,"#lib"]
+bin = "#bin/$PLATFORM/"
+
+env = Environment(CPPPATH=includeFolder,
+				  LIBDIR = lib,
+				  BINDIR = bin,
+                  LIBPATH = libpath,
+				  PLATFORM = platform )
+
+Export( 'env', 'mymode', 'debugcflags', 'releasecflags', 'buildroot','libpath' )
+
+
+env.SConsignFile()
+
+# Libraries
+project = "devPatterns"
+SConscript( 'src/sconscript', exports=['project'])
+
+if samples:
+   project = "samples"
+   SConscript( "exampleProgram/sconscript", exports=['project'] )
+## End If
+
